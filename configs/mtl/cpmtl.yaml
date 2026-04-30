@@ -5,7 +5,7 @@
 
 dataset:
   name: mnist               # options: mnist | fashion | fashion_and_mnist
-  data_dir: data/           # directory containing MultiMNIST/ subfolder
+  data_dir: data/multi_mnist  # directory containing multi_mnist.pickle etc.
   n_tasks: 2
 
 model:

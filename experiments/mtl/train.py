@@ -22,7 +22,7 @@ import numpy as np
 import torch
 import yaml
 
-from mtl.datasets.multi_mnist import build_dataloaders, MultiMNIST
+from mtl.datasets.multi_mnist import build_dataloaders
 from mtl.models import build_model
 from mtl.methods import build_method
 from mtl.metrics import compute_accuracy, evaluate_cpmtl
@@ -120,9 +120,15 @@ def train_paretomtl(cfg: dict, pref_idx: int, log: logging.Logger) -> None:
 # WeightedSum training (CPMTL Phase 1)
 # ---------------------------------------------------------------------------
 
+def _resize_to_28(batch):
+    import torch.nn.functional as F
+    imgs, labels = torch.utils.data.dataloader.default_collate(batch)
+    imgs = F.interpolate(imgs, size=(28, 28), mode="bilinear", align_corners=False)
+    return imgs, labels
+
+
 def train_weighted_sum(cfg: dict, log: logging.Logger) -> None:
     import torch.nn.functional as F
-    from torchvision import transforms
 
     dataset_cfg = cfg["dataset"]
     method_cfg = cfg["method"]
@@ -130,17 +136,15 @@ def train_weighted_sum(cfg: dict, log: logging.Logger) -> None:
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     n_pref = method_cfg["n_pref"]
-    data_dir = Path(dataset_cfg["data_dir"]) / "MultiMNIST"
-
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.1307,), (0.3081,)),
-    ])
-    trainset = MultiMNIST(data_dir, train=True, download=True, transform=transform)
-    testset = MultiMNIST(data_dir, train=False, download=True, transform=transform)
     bs = method_cfg.get("init_batch_size", 256)
-    trainloader = torch.utils.data.DataLoader(trainset, batch_size=bs, shuffle=True, num_workers=2)
-    testloader = torch.utils.data.DataLoader(testset, batch_size=bs, shuffle=False, num_workers=2)
+
+    base_train, base_test = build_dataloaders({**dataset_cfg, "batch_size": bs})
+    trainloader = torch.utils.data.DataLoader(
+        base_train.dataset, batch_size=bs, shuffle=True, num_workers=2, collate_fn=_resize_to_28
+    )
+    testloader = torch.utils.data.DataLoader(
+        base_test.dataset, batch_size=bs, shuffle=False, num_workers=2, collate_fn=_resize_to_28
+    )
 
     closures = [
         lambda n, l, t: F.cross_entropy(l[0], t[:, 0]),
@@ -189,7 +193,6 @@ def train_weighted_sum(cfg: dict, log: logging.Logger) -> None:
 
 def train_cpmtl(cfg: dict, log: logging.Logger) -> None:
     import torch.nn.functional as F
-    from torchvision import transforms
 
     dataset_cfg = cfg["dataset"]
     method_cfg = cfg["method"]
@@ -197,17 +200,15 @@ def train_cpmtl(cfg: dict, log: logging.Logger) -> None:
     train_cfg = cfg["training"]
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    data_dir = Path(dataset_cfg["data_dir"]) / "MultiMNIST"
+    bs = method_cfg.get("init_batch_size", 256)
 
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.1307,), (0.3081,)),
-    ])
-    bs = method_cfg.get("init_batch_size", 2048)
-    trainset = MultiMNIST(data_dir, train=True, download=True, transform=transform)
-    testset = MultiMNIST(data_dir, train=False, download=True, transform=transform)
-    trainloader = torch.utils.data.DataLoader(trainset, batch_size=bs, shuffle=True, num_workers=2)
-    testloader = torch.utils.data.DataLoader(testset, batch_size=bs, shuffle=False, num_workers=2)
+    base_train, base_test = build_dataloaders({**dataset_cfg, "batch_size": bs})
+    trainloader = torch.utils.data.DataLoader(
+        base_train.dataset, batch_size=bs, shuffle=True, num_workers=2, collate_fn=_resize_to_28
+    )
+    testloader = torch.utils.data.DataLoader(
+        base_test.dataset, batch_size=bs, shuffle=False, num_workers=2, collate_fn=_resize_to_28
+    )
 
     closures = [
         lambda n, l, t: F.cross_entropy(l[0], t[:, 0]),
