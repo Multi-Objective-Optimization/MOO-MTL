@@ -1,0 +1,23 @@
+# PMTL — Synthetic experiment
+# Paper: Pareto Multi-Task Learning, Lin et al., NeurIPS 2019
+# Run: python experiments/synthetic/run.py --config configs/synthetic/pmtl.yaml
+
+problem:
+  name: concave             # options: concave | zdt2
+  n_dim: 20                 # dimension of decision variable
+
+method:
+  name: ParetoMTL           # options: ParetoMTL | MOOMTL | LinearScalarization
+  n_pref: 10                # number of preference vectors (points on Pareto front)
+  init_fraction: 0.2        # fraction of iterations used for init phase (ParetoMTL only)
+
+optimization:
+  n_iter: 100               # total gradient descent iterations per solution
+  step_size: 1.0
+
+experiment:
+  name: pmtl_concave
+  seed: 42
+  output_dir: results/synthetic/pmtl
+  log_level: INFO           # options: DEBUG | INFO | WARNING
+  save_plot: true

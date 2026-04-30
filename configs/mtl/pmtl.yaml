@@ -1,0 +1,40 @@
+# PMTL — Multi-Task Learning on MultiMNIST
+# Paper: Pareto Multi-Task Learning, Lin et al., NeurIPS 2019
+# Run: python experiments/mtl/train.py --config configs/mtl/pmtl.yaml
+# Run single pref: python experiments/mtl/train.py --config configs/mtl/pmtl.yaml --pref-idx 2
+
+dataset:
+  name: mnist               # options: mnist | fashion | fashion_and_mnist
+  data_dir: data/           # directory containing multi_mnist.pickle etc.
+  n_tasks: 2
+  batch_size: 256
+
+model:
+  backbone: lenet            # options: lenet | resnet18
+  n_tasks: 2
+  init_weight: [0.5, 0.5]   # initial task weights for the wrapper
+
+method:
+  name: ParetoMTL           # options: ParetoMTL | WeightedSum | CPMTL
+  n_pref: 5                 # number of preference vectors (Pareto front resolution)
+  init_epochs: 2            # epochs for init phase (ParetoMTL only)
+
+training:
+  n_epochs: 100
+  batch_size: 256
+  optimizer:
+    name: SGD               # options: SGD | Adam
+    lr: 1.0e-3
+    momentum: 0.9           # only used when optimizer is SGD
+  scheduler:
+    name: MultiStepLR       # options: MultiStepLR | CosineAnnealingLR
+    milestones: [15, 30, 45, 60, 75, 90]   # only used with MultiStepLR
+    gamma: 0.5
+  log_every: 2              # log accuracy every N epochs
+  save_model: true
+
+experiment:
+  name: pmtl_mnist_lenet
+  seed: 42
+  output_dir: results/mtl/pmtl
+  log_level: INFO           # options: DEBUG | INFO | WARNING

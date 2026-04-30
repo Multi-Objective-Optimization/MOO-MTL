@@ -1,0 +1,51 @@
+# CPMTL — Multi-Task Learning on MultiMNIST (2-phase)
+# Paper: Efficient Continuous Pareto Exploration in MTL, Ma et al., ICML 2020
+# Run: python experiments/mtl/train.py --config configs/mtl/cpmtl.yaml
+# Phase 1 (WeightedSum) runs automatically if checkpoints not found.
+
+dataset:
+  name: mnist               # options: mnist | fashion | fashion_and_mnist
+  data_dir: data/           # directory containing MultiMNIST/ subfolder
+  n_tasks: 2
+
+model:
+  backbone: lenet_cpmtl     # options: lenet | lenet_cpmtl | resnet18
+  n_tasks: 2
+
+method:
+  name: CPMTL               # options: ParetoMTL | WeightedSum | CPMTL
+  n_pref: 5                 # number of Pareto solutions to explore
+
+  # Phase 1: WeightedSum initialization
+  init_epochs: 30           # epochs for weighted sum pre-training
+  init_lr: 1.0e-2           # learning rate for Phase 1
+  init_batch_size: 256      # batch size for Phase 1
+
+  # Phase 2: KKT-based Pareto exploration
+  n_steps: 10               # number of KKT gradient steps per checkpoint
+  kkt_solver: minres        # options: minres | cg
+  shift: 0.0                # MINRES shift parameter (minres only)
+  tol: 1.0e-5               # solver tolerance
+  damping: 0.1              # Hessian damping for numerical stability
+  maxiter: 50               # max Krylov iterations
+  stochastic: false         # use stochastic (batch) HVP
+  kkt_momentum: 0.0         # momentum for KKT update (0 = no momentum)
+  create_graph: false
+  grad_correction: false
+  verbose: false
+
+training:
+  optimizer:
+    name: SGD               # options: SGD | Adam
+    lr: 0.1                 # learning rate for Phase 2 KKT steps
+  scheduler:
+    name: CosineAnnealingLR # options: MultiStepLR | CosineAnnealingLR
+    T_max: 30               # only used with CosineAnnealingLR
+  log_every: 1
+  save_model: true
+
+experiment:
+  name: cpmtl_mnist
+  seed: 42
+  output_dir: results/mtl/cpmtl
+  log_level: INFO           # options: DEBUG | INFO | WARNING

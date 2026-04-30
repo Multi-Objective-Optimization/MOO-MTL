@@ -1,3 +1,23 @@
+Metadata-Version: 2.4
+Name: moo-mtl
+Version: 0.1.0
+Summary: Multi-Objective Optimization for Multi-Task Learning
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: torch>=1.8
+Requires-Dist: torchvision>=0.9
+Requires-Dist: numpy>=1.20
+Requires-Dist: scipy>=1.5
+Requires-Dist: autograd>=1.4
+Requires-Dist: matplotlib>=3.3
+Requires-Dist: pyyaml>=5.4
+Requires-Dist: cvxpy>=1.1
+Requires-Dist: tqdm>=4.60
+Requires-Dist: termcolor>=1.1
+Provides-Extra: dev
+Requires-Dist: jupyter>=1.0; extra == "dev"
+Requires-Dist: ipykernel>=6.0; extra == "dev"
+
 # MOO-MTL
 
 Unified research repository for **Multi-Objective Optimization in Multi-Task Learning**.
