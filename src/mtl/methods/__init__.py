@@ -1,4 +1,4 @@
-from core.base_method import MOOMethod
+from src.core.base_method import MOOMethod
 from .pareto_mtl import ParetoMTL
 from .weighted_sum import WeightedSum
 from .cpmtl import CPMTL

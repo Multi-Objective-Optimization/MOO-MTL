@@ -9,10 +9,10 @@ import numpy as np
 import torch
 from termcolor import colored
 
-from core.base_method import MOOMethod, MethodOutput
-from core.solvers.hvp_solver import VisionHVPSolver
-from core.solvers.kkt_solver import MINRESKKTSolver, CGKKTSolver
-from mtl.metrics import evaluate_cpmtl
+from src.core.base_method import MOOMethod, MethodOutput
+from src.core.solvers.hvp_solver import VisionHVPSolver
+from src.core.solvers.kkt_solver import MINRESKKTSolver, CGKKTSolver
+from src.mtl.metrics import evaluate_cpmtl
 
 
 class CPMTL(MOOMethod):

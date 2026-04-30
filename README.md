@@ -15,45 +15,33 @@ Integrates two papers with a consistent structure so that adding new MOO methods
 
 ```
 MOO-MTL/
-├── src/moo_mtl/
+├── train.py                # MTL entry point
+├── run.py                  # Synthetic entry point
+├── src/
 │   ├── core/               # Shared: base class, solvers (MinNorm, HVP, KKT, linalg)
 │   ├── synthetic/          # Domain 1: synthetic MOO problems and methods
 │   │   ├── problems/       # ConcaveProblem, Zdt2Variant
 │   │   └── methods/        # ParetoMTL, MOOMTL, LinearScalarization (numpy/autograd)
 │   └── mtl/                # Domain 2: multi-task learning
-│       ├── models/         # LeNetPMTL, LeNetCPMTL, ResNet18MTL, MultiTaskWrapper
-│       ├── datasets/       # MultiMNIST (pickle + download variants)
+│       ├── models/         # LeNetPMTL, LeNetCPMTL, MultiTaskWrapper
+│       ├── datasets/       # MultiMNIST (pickle-based)
 │       └── methods/        # ParetoMTL, WeightedSum, CPMTL (PyTorch)
 ├── configs/
 │   ├── synthetic/          # pmtl.yaml, cpmtl.yaml
 │   └── mtl/                # pmtl.yaml, cpmtl.yaml
-└── experiments/
-    ├── synthetic/run.py
-    └── mtl/train.py
+└── data/
+    └── multi_mnist/        # multi_mnist.pickle, multi_fashion.pickle, ...
 ```
 
 ---
 
-## Installation
-
-```bash
-git clone <repo>
-cd MOO-MTL
-pip install -e .
-```
-
 ## Data Setup
 
-**PMTL-style** (pickle files — download from the original PMTL repo):
+Đặt pickle files vào `data/multi_mnist/`:
 ```
-data/multi_mnist.pickle
-data/multi_fashion.pickle
-data/multi_fashion_and_mnist.pickle
-```
-
-**CPMTL-style** (auto-downloaded when `download=True`):
-```
-data/MultiMNIST/   ← created automatically
+data/multi_mnist/multi_mnist.pickle
+data/multi_mnist/multi_fashion.pickle
+data/multi_mnist/multi_fashion_and_mnist.pickle
 ```
 
 ---
@@ -63,24 +51,21 @@ data/MultiMNIST/   ← created automatically
 ### Synthetic
 
 ```bash
-# ParetoMTL on concave problem (PMTL)
-python experiments/synthetic/run.py --config configs/synthetic/pmtl.yaml
-
-# ZDT2 variant (CPMTL)
-python experiments/synthetic/run.py --config configs/synthetic/cpmtl.yaml
+python run_synthetic.py --config configs/synthetic/pmtl.yaml
+python run_synthetic.py --config configs/synthetic/cpmtl.yaml
 ```
 
 ### Multi-Task Learning
 
 ```bash
-# ParetoMTL on MultiMNIST (PMTL)
-python experiments/mtl/train.py --config configs/mtl/pmtl.yaml
+# ParetoMTL — train all preference vectors
+python train_mtl.py --config configs/mtl/pmtl.yaml
 
 # Single preference index (for cluster parallelism)
-python experiments/mtl/train.py --config configs/mtl/pmtl.yaml --pref-idx 2
+python train_mtl.py --config configs/mtl/pmtl.yaml --pref-idx 2
 
 # CPMTL (2-phase: WeightedSum init → KKT exploration)
-python experiments/mtl/train.py --config configs/mtl/cpmtl.yaml
+python train_mtl.py --config configs/mtl/cpmtl.yaml
 ```
 
 ---

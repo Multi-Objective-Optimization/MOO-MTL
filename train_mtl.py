@@ -4,13 +4,13 @@ Supports ParetoMTL (PMTL), WeightedSum (CPMTL Phase 1), and CPMTL (Phase 2).
 
 Usage:
     # Train all preference vectors:
-    python experiments/mtl/train.py --config configs/mtl/pmtl.yaml
+    python train_mtl.py --config configs/mtl/pmtl.yaml
 
     # Train one preference index (for cluster parallelism):
-    python experiments/mtl/train.py --config configs/mtl/pmtl.yaml --pref-idx 2
+    python train_mtl.py --config configs/mtl/pmtl.yaml --pref-idx 2
 
     # CPMTL (2-phase):
-    python experiments/mtl/train.py --config configs/mtl/cpmtl.yaml
+    python train_mtl.py --config configs/mtl/cpmtl.yaml
 """
 
 import argparse
@@ -22,11 +22,11 @@ import numpy as np
 import torch
 import yaml
 
-from mtl.datasets.multi_mnist import build_dataloaders
-from mtl.models import build_model
-from mtl.methods import build_method
-from mtl.metrics import compute_accuracy, evaluate_cpmtl
-from synthetic.utils import circle_points, evenly_dist_weights
+from src.mtl.datasets.multi_mnist import build_dataloaders
+from src.mtl.models import build_model
+from src.mtl.methods import build_method
+from src.mtl.metrics import compute_accuracy, evaluate_cpmtl
+from src.synthetic.utils import circle_points, evenly_dist_weights
 
 
 # ---------------------------------------------------------------------------
@@ -151,12 +151,12 @@ def train_weighted_sum(cfg: dict, log: logging.Logger) -> None:
         lambda n, l, t: F.cross_entropy(l[1], t[:, 1]),
     ]
 
-    from mtl.models.lenet import LeNetCPMTL
+    from src.mtl.models.lenet import LeNetCPMTL
     prefs = evenly_dist_weights(n_pref + 2, 2)
     out_dir = Path(exp_cfg["output_dir"]) / "weighted_sum"
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    method = build_method(method_cfg)
+    method = build_method({**method_cfg, "name": "WeightedSum"})
     lr = method_cfg.get("init_lr", 1e-2)
     n_epochs = method_cfg.get("init_epochs", 30)
 
@@ -215,7 +215,7 @@ def train_cpmtl(cfg: dict, log: logging.Logger) -> None:
         lambda n, l, t: F.cross_entropy(l[1], t[:, 1]),
     ]
 
-    from mtl.models.lenet import LeNetCPMTL
+    from src.mtl.models.lenet import LeNetCPMTL
     ws_dir = Path(exp_cfg["output_dir"]) / "weighted_sum"
     out_dir = Path(exp_cfg["output_dir"]) / "cpmtl"
     out_dir.mkdir(parents=True, exist_ok=True)

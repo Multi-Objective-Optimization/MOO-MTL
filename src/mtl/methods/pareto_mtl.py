@@ -5,8 +5,8 @@ import numpy as np
 import torch
 from torch.autograd import Variable
 
-from core.base_method import MOOMethod, MethodOutput
-from core.solvers.min_norm_solver_torch import MinNormSolver
+from src.core.base_method import MOOMethod, MethodOutput
+from src.core.solvers.min_norm_solver_torch import MinNormSolver
 
 
 class ParetoMTL(MOOMethod):

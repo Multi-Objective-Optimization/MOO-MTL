@@ -1,8 +1,8 @@
 """Synthetic MOO experiment runner.
 
 Usage:
-    python experiments/synthetic/run.py --config configs/synthetic/pmtl.yaml
-    python experiments/synthetic/run.py --config configs/synthetic/cpmtl.yaml
+    python run_synthetic.py --config configs/synthetic/pmtl.yaml
+    python run_synthetic.py --config configs/synthetic/cpmtl.yaml
 """
 
 import argparse
@@ -13,9 +13,9 @@ from pathlib import Path
 import numpy as np
 import yaml
 
-from synthetic.methods import build_method
-from synthetic.utils import circle_points
-from synthetic.visualization import plot_pareto_front
+from src.synthetic.methods import build_method
+from src.synthetic.utils import circle_points
+from src.synthetic.visualization import plot_pareto_front
 
 
 PROBLEM_REGISTRY = {}
@@ -23,10 +23,10 @@ PROBLEM_REGISTRY = {}
 
 def _get_problem(name: str):
     if name == "concave":
-        from synthetic.problems.concave import ConcaveProblem
+        from src.synthetic.problems.concave import ConcaveProblem
         return ConcaveProblem()
     elif name == "zdt2":
-        from synthetic.problems.zdt2 import Zdt2Variant
+        from src.synthetic.problems.zdt2 import Zdt2Variant
         return Zdt2Variant()
     else:
         raise ValueError(f"Unknown problem '{name}'. Available: concave | zdt2")

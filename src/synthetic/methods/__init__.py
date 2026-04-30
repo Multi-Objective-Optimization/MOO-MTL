@@ -1,4 +1,4 @@
-from core.base_method import MOOMethod
+from src.core.base_method import MOOMethod
 from .pareto_mtl import ParetoMTLSynthetic
 from .moo_mtl import MOOMTLSynthetic
 from .linear_scalarization import LinearScalarizationSynthetic

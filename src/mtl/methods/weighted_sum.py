@@ -7,8 +7,8 @@ import torch
 import torch.nn.functional as F
 from termcolor import colored
 
-from core.base_method import MOOMethod, MethodOutput
-from mtl.metrics import evaluate_cpmtl
+from src.core.base_method import MOOMethod, MethodOutput
+from src.mtl.metrics import evaluate_cpmtl
 
 
 class WeightedSum(MOOMethod):

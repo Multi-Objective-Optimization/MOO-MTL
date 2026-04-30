@@ -3,7 +3,7 @@
 
 import numpy as np
 
-from core.base_method import MOOMethod, MethodOutput
+from src.core.base_method import MOOMethod, MethodOutput
 
 
 class LinearScalarizationSynthetic(MOOMethod):

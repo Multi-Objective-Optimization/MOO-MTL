@@ -3,8 +3,8 @@
 
 import numpy as np
 
-from core.base_method import MOOMethod, MethodOutput
-from core.solvers.min_norm_solver_numpy import MinNormSolver
+from src.core.base_method import MOOMethod, MethodOutput
+from src.core.solvers.min_norm_solver_numpy import MinNormSolver
 
 
 class ParetoMTLSynthetic(MOOMethod):
