@@ -11,7 +11,7 @@ import torch.nn as nn
 from torch import Tensor
 
 from .hvp_solver import HVPSolver
-from .min_norm_solver_torch import find_min_norm_element
+from .min_norm_solver_torch import MinNormSolver as MinNormSolverTorch
 from .linalg_solver import KrylovSolver, MINRESSolver, CGSolver
 
 
@@ -50,7 +50,7 @@ class KKTSolver(object):
 
         jacobians = hvp_solver.grad(create_graph=self.create_graph)
 
-        alphas, _ = find_min_norm_element(jacobians.detach())
+        alphas, _ = MinNormSolverTorch.find_min_norm_element([[v] for v in jacobians.detach()])
         alphas = jacobians.new_tensor(alphas).detach()
 
         if verbose:
