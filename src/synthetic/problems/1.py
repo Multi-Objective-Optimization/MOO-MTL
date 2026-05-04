@@ -4,8 +4,6 @@
 import autograd.numpy as np
 from autograd import grad
 
-from .base import SyntheticProblem
-
 
 def _f1(x):
     n = len(x)
@@ -21,7 +19,7 @@ _f1_dx = grad(_f1)
 _f2_dx = grad(_f2)
 
 
-class ConcaveProblem(SyntheticProblem):
+class ConcaveProblem():
     """Two-objective concave problem with analytic Pareto front."""
 
     def evaluate(self, x):

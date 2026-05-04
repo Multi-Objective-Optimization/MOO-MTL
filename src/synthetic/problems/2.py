@@ -4,10 +4,8 @@
 
 import numpy as np
 
-from .base import SyntheticProblem
 
-
-class Zdt2Variant(SyntheticProblem):
+class Zdt2Variant():
     """ZDT2 variant with 3D decision space and 2 objectives.
 
     The problem is defined via a differentiable reparametrization that

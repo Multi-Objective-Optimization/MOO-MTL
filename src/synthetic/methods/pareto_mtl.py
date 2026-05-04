@@ -26,6 +26,8 @@ class ParetoMTLSynthetic(MOOMethod):
 
 def _get_d_paretomtl_init(grads, value, weights, i):
     nobj, dim = grads.shape
+
+    # check active constraints# check active constraints
     normalized_current_weight = weights[i] / np.linalg.norm(weights[i])
     normalized_rest_weights = (
         np.delete(weights, i, axis=0)
