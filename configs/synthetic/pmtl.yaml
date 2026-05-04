@@ -3,7 +3,7 @@
 # Run: python experiments/synthetic/run.py --config configs/synthetic/pmtl.yaml
 
 problem:
-  name: concave             # options: concave | zdt2
+  name: 1                   # options: 1 | 2
   n_dim: 20                 # dimension of decision variable
 
 method:
@@ -16,7 +16,7 @@ optimization:
   step_size: 1.0
 
 experiment:
-  name: pmtl_concave
+  name: 1                   # options: 1 | 2
   seed: 42
   output_dir: results/synthetic/pmtl
   log_level: INFO           # options: DEBUG | INFO | WARNING

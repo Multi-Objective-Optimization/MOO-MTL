@@ -3,7 +3,7 @@
 # Run: python experiments/synthetic/run.py --config configs/synthetic/cpmtl.yaml
 
 problem:
-  name: zdt2                # options: concave | zdt2
+  name: 2                   # options: 1 | 2
   n_dim: 3                  # ZDT2 decision space dimension (fixed at 3 for this problem)
 
 method:
@@ -16,7 +16,7 @@ optimization:
   step_size: 0.1            # smaller step size for ZDT2 (smoother landscape)
 
 experiment:
-  name: cpmtl_zdt2
+  name: 2                   # options: 1 | 2
   seed: 42
   output_dir: results/synthetic/cpmtl
   log_level: INFO           # options: DEBUG | INFO | WARNING
