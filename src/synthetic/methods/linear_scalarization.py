@@ -6,7 +6,7 @@ import numpy as np
 from src.core.base_method import MOOMethod, MethodOutput
 
 
-class LinearScalarizationSynthetic(MOOMethod):
+class LinearScalarization(MOOMethod):
     """Linear scalarization with randomly sampled preference weight."""
 
     def get_descent_direction(self, grads, losses, ref_vec=None, pref_idx=None, **kwargs):
@@ -14,7 +14,7 @@ class LinearScalarizationSynthetic(MOOMethod):
         weight = np.stack([r, 1 - r])
         return weight, {}
 
-    def step(self, x, problem, ref_vec=None, pref_idx=None, step_size=1.0):
+    def step(self, x, problem, ref_vec=None, pref_idx=None, step_size=1.0, **kwargs):
         f, f_dx = problem.evaluate(x)
         weight, meta = self.get_descent_direction(f_dx, f)
         x = x - step_size * np.dot(weight.T, f_dx).flatten()

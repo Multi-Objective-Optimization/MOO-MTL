@@ -2,12 +2,13 @@
 
 Unified research repository for **Multi-Objective Optimization in Multi-Task Learning**.
 
-Integrates two papers with a consistent structure so that adding new MOO methods never requires learning a new layout.
+Integrates multiple papers with a consistent structure so that adding a new MOO method never requires learning a new layout.
 
 | Paper | Algorithm(s) | Domain |
 |---|---|---|
-| Lin et al., NeurIPS 2019 | ParetoMTL, MOO-MTL, LinearScalarization | Synthetic + MTL |
-| Ma et al., ICML 2020 | WeightedSum, CPMTL (KKT-based) | Synthetic + MTL |
+| Lin et al., NeurIPS 2019 | ParetoMTL, LinearScalarization | Synthetic + MTL |
+| Sener & Koltun, NeurIPS 2018 | MOO-MTL | Synthetic |
+| Ma et al., ICML 2020 | WeightedSum, CPMTL (KKT-based) | MTL |
 
 ---
 
@@ -15,17 +16,18 @@ Integrates two papers with a consistent structure so that adding new MOO methods
 
 ```
 MOO-MTL/
-├── train.py                # MTL entry point
-├── run.py                  # Synthetic entry point
+├── run.py                  # Unified entry point for all experiments
 ├── src/
 │   ├── core/               # Shared: base class, solvers (MinNorm, HVP, KKT, linalg)
 │   ├── synthetic/          # Domain 1: synthetic MOO problems and methods
-│   │   ├── problems/       # ConcaveProblem, Zdt2Variant
-│   │   └── methods/        # ParetoMTL, MOOMTL, LinearScalarization (numpy/autograd)
+│   │   ├── problems/       # ConcaveProblem, Zdt2Variant + PROBLEM_REGISTRY
+│   │   ├── methods/        # ParetoMTL, MOOMTL, LinearScalarization (numpy/autograd)
+│   │   └── trainers/       # StandardSyntheticTrainer + SYNTHETIC_TRAINER_REGISTRY
 │   └── mtl/                # Domain 2: multi-task learning
-│       ├── models/         # LeNetPMTL, LeNetCPMTL, MultiTaskWrapper
+│       ├── models/         # LeNetPMTL, LeNetCPMTL, MultiTaskWrapper + BACKBONE_REGISTRY
 │       ├── datasets/       # MultiMNIST (pickle-based)
-│       └── methods/        # ParetoMTL, WeightedSum, CPMTL (PyTorch)
+│       ├── methods/        # ParetoMTL, WeightedSum, CPMTL (PyTorch)
+│       └── trainers/       # ParetoMTLTrainer, CPMTLTrainer + MTL_TRAINER_REGISTRY
 ├── configs/
 │   ├── synthetic/          # pmtl.yaml, cpmtl.yaml
 │   └── mtl/                # pmtl.yaml, cpmtl.yaml
@@ -48,46 +50,32 @@ data/multi_mnist/multi_fashion_and_mnist.pickle
 
 ## Running Experiments
 
-### Synthetic
+Tất cả experiment đều chạy qua một entry point duy nhất. Config tự khai báo domain của nó.
 
 ```bash
-python run_synthetic.py --config configs/synthetic/pmtl.yaml
-python run_synthetic.py --config configs/synthetic/cpmtl.yaml
-```
+# Synthetic experiments
+python run.py --config configs/synthetic/pmtl.yaml
+python run.py --config configs/synthetic/cpmtl.yaml
 
-### Multi-Task Learning
+# MTL experiments — train all preference vectors
+python run.py --config configs/mtl/pmtl.yaml
+python run.py --config configs/mtl/cpmtl.yaml
 
-```bash
-# ParetoMTL — train all preference vectors
-python train_mtl.py --config configs/mtl/pmtl.yaml
-
-# Single preference index (for cluster parallelism)
-python train_mtl.py --config configs/mtl/pmtl.yaml --pref-idx 2
-
-# CPMTL (2-phase: WeightedSum init → KKT exploration)
-python train_mtl.py --config configs/mtl/cpmtl.yaml
+# MTL — single preference index (for cluster parallelism)
+python run.py --config configs/mtl/pmtl.yaml --pref-idx 2
+for i in $(seq 0 4); do python run.py --config configs/mtl/pmtl.yaml --pref-idx $i; done
 ```
 
 ---
 
 ## Adding a New MOO Method
 
-### For synthetic problems:
+1. **Method class** — subclass `MOOMethod` in `src/<domain>/methods/your_method.py`, implement `get_descent_direction()` and `step()`, register in `METHOD_REGISTRY`
+2. **Trainer class** — subclass `SyntheticTrainer` or `MTLTrainer` in `src/<domain>/trainers/your_trainer.py`, implement `run()` or `train()`, register in `TRAINER_REGISTRY`
+3. **Config YAML** — create `configs/<domain>/your_paper.yaml` with `domain: synthetic` or `domain: mtl`
+4. Run: `python run.py --config configs/<domain>/your_paper.yaml`
 
-1. Create `src/moo_mtl/synthetic/methods/your_method.py`
-2. Subclass `MOOMethod` from `moo_mtl.core.base_method`
-3. Implement `get_descent_direction()` and `step()`
-4. Add one line to `src/moo_mtl/synthetic/methods/__init__.py`:
-   ```python
-   SYNTHETIC_METHOD_REGISTRY["YourMethod"] = YourMethodSynthetic
-   ```
-5. Set `method.name: YourMethod` in your config YAML
-
-### For MTL:
-
-Same process under `src/moo_mtl/mtl/methods/` and `MTL_METHOD_REGISTRY`.
-
-The two domains are completely independent — adding a method to one does not affect the other.
+No changes to `run.py` or any existing file required.
 
 ---
 

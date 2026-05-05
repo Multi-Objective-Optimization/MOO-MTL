@@ -7,7 +7,7 @@ from src.core.base_method import MOOMethod, MethodOutput
 from src.core.solvers.min_norm_solver_numpy import MinNormSolver
 
 
-class ParetoMTLSynthetic(MOOMethod):
+class ParetoMTL(MOOMethod):
     """ParetoMTL for synthetic optimization (NumPy-based)."""
 
     def get_descent_direction(self, grads, losses, ref_vec=None, pref_idx=None, init_phase=False, **kwargs):

@@ -1,12 +1,12 @@
 from src.core.base_method import MOOMethod
-from .pareto_mtl import ParetoMTLSynthetic
-from .moo_mtl import MOOMTLSynthetic
-from .linear_scalarization import LinearScalarizationSynthetic
+from .pareto_mtl import ParetoMTL
+from .moo_mtl import MOOMTL
+from .linear_scalarization import LinearScalarization
 
 SYNTHETIC_METHOD_REGISTRY = {
-    "ParetoMTL": ParetoMTLSynthetic,
-    "MOOMTL": MOOMTLSynthetic,
-    "LinearScalarization": LinearScalarizationSynthetic,
+    "ParetoMTL": ParetoMTL,
+    "MOOMTL": MOOMTL,
+    "LinearScalarization": LinearScalarization,
 }
 
 

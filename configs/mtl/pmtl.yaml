@@ -1,7 +1,9 @@
 # PMTL — Multi-Task Learning on MultiMNIST
 # Paper: Pareto Multi-Task Learning, Lin et al., NeurIPS 2019
-# Run: python experiments/mtl/train.py --config configs/mtl/pmtl.yaml
-# Run single pref: python experiments/mtl/train.py --config configs/mtl/pmtl.yaml --pref-idx 2
+# Run: python run.py --config configs/mtl/pmtl.yaml
+# Run single pref: python run.py --config configs/mtl/pmtl.yaml --pref-idx 2
+
+domain: mtl
 
 dataset:
   name: mnist               # options: mnist | fashion | fashion_and_mnist

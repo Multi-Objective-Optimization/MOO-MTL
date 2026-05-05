@@ -1,9 +1,11 @@
-# CPMTL — Synthetic experiment
+# CPMTL — Synthetic experiment (ZDT2 variant)
 # Paper: Efficient Continuous Pareto Exploration in MTL, Ma et al., ICML 2020
-# Run: python experiments/synthetic/run.py --config configs/synthetic/cpmtl.yaml
+# Run: python run.py --config configs/synthetic/cpmtl.yaml
+
+domain: synthetic
 
 problem:
-  name: 2                   # options: 1 | 2
+  name: ma2020_zdt2         # options: lin2019_ex1 | ma2020_zdt2
   n_dim: 3                  # ZDT2 decision space dimension (fixed at 3 for this problem)
 
 method:
@@ -16,7 +18,7 @@ optimization:
   step_size: 0.1            # smaller step size for ZDT2 (smoother landscape)
 
 experiment:
-  name: 2                   # options: 1 | 2
+  name: pmtl_zdt2
   seed: 42
   output_dir: results/synthetic/cpmtl
   log_level: INFO           # options: DEBUG | INFO | WARNING

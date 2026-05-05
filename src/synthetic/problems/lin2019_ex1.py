@@ -19,7 +19,7 @@ _f1_dx = grad(_f1)
 _f2_dx = grad(_f2)
 
 
-class ConcaveProblem():
+class Lin2019Ex1():
     """Two-objective concave problem with analytic Pareto front."""
 
     def evaluate(self, x):

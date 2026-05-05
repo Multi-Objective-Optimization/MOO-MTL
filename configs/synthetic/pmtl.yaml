@@ -1,9 +1,11 @@
 # PMTL — Synthetic experiment
 # Paper: Pareto Multi-Task Learning, Lin et al., NeurIPS 2019
-# Run: python experiments/synthetic/run.py --config configs/synthetic/pmtl.yaml
+# Run: python run.py --config configs/synthetic/pmtl.yaml
+
+domain: synthetic
 
 problem:
-  name: 1                   # options: 1 | 2
+  name: lin2019_ex1         # options: lin2019_ex1 | ma2020_zdt2
   n_dim: 20                 # dimension of decision variable
 
 method:
@@ -16,7 +18,7 @@ optimization:
   step_size: 1.0
 
 experiment:
-  name: 1                   # options: 1 | 2
+  name: pmtl_concave
   seed: 42
   output_dir: results/synthetic/pmtl
   log_level: INFO           # options: DEBUG | INFO | WARNING

@@ -1,7 +1,9 @@
 # CPMTL — Multi-Task Learning on MultiMNIST (2-phase)
 # Paper: Efficient Continuous Pareto Exploration in MTL, Ma et al., ICML 2020
-# Run: python experiments/mtl/train.py --config configs/mtl/cpmtl.yaml
+# Run: python run.py --config configs/mtl/cpmtl.yaml
 # Phase 1 (WeightedSum) runs automatically if checkpoints not found.
+
+domain: mtl
 
 dataset:
   name: mnist               # options: mnist | fashion | fashion_and_mnist

@@ -5,7 +5,7 @@
 import numpy as np
 
 
-class Zdt2Variant():
+class Ma2020ZDT2():
     """ZDT2 variant with 3D decision space and 2 objectives.
 
     The problem is defined via a differentiable reparametrization that
@@ -70,7 +70,6 @@ class Zdt2Variant():
         return np.column_stack([f1, f2])
 
     def sample_pareto_set(self):
-        """Sample a random point from the Pareto set."""
         x = np.zeros(self.n)
         x[0] = np.random.uniform(-np.pi / 2, np.pi / 2) - np.pi
         theta = np.random.uniform(-np.pi, np.pi)
